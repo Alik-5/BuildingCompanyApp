@@ -2,7 +2,10 @@
     .shell-grid,
     .dashboard-grid,
     .detail-grid,
-    .insight-grid,
+    .insight-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
     .card-grid.three-up {
         grid-template-columns: 1fr 1fr;
     }
@@ -14,13 +17,18 @@
         bottom: 0;
         width: min(320px, 88vw);
         transform: translateX(-110%);
-        transition: transform 0.3s ease;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         z-index: 45;
         padding: 1rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.96) 100%);
+        backdrop-filter: blur(20px);
+        box-shadow: 8px 0 32px rgba(59, 130, 246, 0.15);
+        overflow-y: auto;
     }
 
     .sidebar.active {
         transform: translateX(0);
+        animation: slideInLeft 0.4s var(--ease-smooth);
     }
 
     .shell-grid {
@@ -31,23 +39,75 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: none;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.08));
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(168, 85, 247, 0.12));
+        transform: scale(1.05);
+    }
+
+    .menu-toggle span {
+        display: block;
+        width: 1.2rem;
+        height: 0.2rem;
+        background: #3b82f6;
+        border-radius: 999px;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin: 0.35rem 0;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(0.5rem, 0.5rem);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(0.35rem, -0.35rem);
     }
 }
 
 @media (max-width: 860px) {
-    .topbar,
+    .topbar {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: stretch;
+        padding: 1rem;
+        animation: slideInDown 0.5s ease;
+    }
+
+    .brand-lockup {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .topbar-actions {
+        width: 100%;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+
     .hero-panel,
     .page-intro,
-    .detail-hero,
-    .footer,
-    .project-actions,
-    .form-actions,
-    .panel-header,
-    .stack-title-row,
-    .mini-row,
-    .row-actions {
+    .detail-hero {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .hero-orbit {
+        width: 180px;
+        height: 180px;
+        align-self: center;
     }
 
     .insight-grid,
@@ -67,14 +127,80 @@
         grid-column: auto;
     }
 
-    .hero-orbit {
-        width: 200px;
-        height: 200px;
+    .content-frame {
+        padding: 1.2rem;
+        border-radius: 20px;
     }
 
-    .content-frame {
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+
+    .stack-title-row,
+    .mini-row,
+    .row-actions,
+    .project-actions,
+    .form-actions,
+    .footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-panel h1,
+    .page-intro h1,
+    .detail-hero h1,
+    .auth-copy h2 {
+        font-size: 1.6rem;
+        line-height: 1.2;
+    }
+
+    .hero-copy,
+    .page-intro p,
+    .detail-hero p {
+        font-size: 0.95rem;
+    }
+
+    .sidebar-panel {
         padding: 1rem;
-        border-radius: 24px;
+        border-radius: 18px;
+    }
+
+    .sidebar-cta {
+        margin-top: 1rem;
+        padding: 0.8rem;
+        border-radius: 14px;
+    }
+
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    .btn-compact {
+        width: 100%;
+    }
+
+    .card-grid,
+    .form-grid {
+        gap: 1rem;
+    }
+
+    .stack-item {
+        padding: 0.8rem;
+    }
+
+    .user-pill {
+        flex-direction: row;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .status-pill {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
     }
 }
 
@@ -84,20 +210,112 @@
     .content-frame,
     .footer,
     .auth-screen,
-    .auth-panel {
-        padding: 1rem;
+    .auth-panel,
+    .panel-card,
+    .sidebar-panel {
+        padding: 0.8rem;
     }
 
     .hero-panel h1,
     .page-intro h1,
     .detail-hero h1,
     .auth-copy h2 {
-        font-size: 1.7rem;
+        font-size: 1.4rem;
+        line-height: 1.1;
     }
 
     .btn,
     .btn-compact,
     .topbar-actions {
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 0.7rem 0.9rem;
+    }
+
+    .hero-orbit {
+        width: 140px;
+        height: 140px;
+    }
+
+    .brand-badge {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.1rem;
+    }
+
+    .insight-card {
+        padding: 1rem;
+    }
+
+    .insight-card strong {
+        font-size: 1.8rem;
+    }
+
+    .insight-card p {
+        font-size: 0.8rem;
+    }
+
+    .shell-grid {
+        gap: 0.8rem;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-width: 90vw;
+    }
+
+    .content-frame {
+        min-height: auto;
+        border-radius: 16px;
+    }
+
+    .panel-card {
+        border-radius: 16px;
+        padding: 1rem;
+    }
+
+    .stack-item {
+        gap: 0.6rem;
+        padding: 0.6rem;
+    }
+
+    .meta-row {
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .form-field {
+        margin-bottom: 1rem;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    .eyebrow {
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .brand-mark small {
+        display: none;
+    }
+
+    .topbar-actions .status-pill {
+        display: none;
+    }
+
+    .user-pill span {
+        display: none;
+    }
+
+    .user-pill strong {
+        font-size: 0.85rem;
+    }
+}
         width: 100%;
     }
 
