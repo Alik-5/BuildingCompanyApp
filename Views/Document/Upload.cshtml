@@ -1,0 +1,69 @@
+@model BuildingCompanyApp.Models.Document
+@{
+    ViewData["Title"] = "Upload Document";
+    Layout = "_Layout";
+    var projects = ViewBag.Projects as List<BuildingCompanyApp.Models.Project> ?? new();
+    var workers = ViewBag.Workers as List<BuildingCompanyApp.Models.Worker> ?? new();
+    int? selectedProjectId = ViewBag.SelectedProjectId;
+    int? selectedWorkerId = ViewBag.SelectedWorkerId;
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Attach Files</p>
+        <h1>Upload drawings, PDFs, contracts and images directly into Qore.</h1>
+    </div>
+</section>
+
+<form method="post" action="@Url.Action("Upload", "Document")" enctype="multipart/form-data" class="form-shell" data-reveal>
+    <div class="form-section">
+        <h2>Document Details</h2>
+        <div class="form-grid">
+            <label><span>Document Name</span><input type="text" name="DocumentName" class="form-input" required></label>
+            <label><span>Document Type</span><input type="text" name="DocumentType" class="form-input" placeholder="PDF, Image, Drawing, Contract"></label>
+            <label><span>Category</span><input type="text" name="Category" class="form-input" placeholder="Permit, Blueprint, Contract"></label>
+            <label><span>Tags</span><input type="text" name="Tags" class="form-input" placeholder="roof, invoice, permit"></label>
+            <label>
+                <span>Project</span>
+                <select name="ProjectId" class="form-select">
+                    <option value="">Not linked</option>
+                    @foreach (var project in projects)
+                    {
+                        if (selectedProjectId == project.ProjectId)
+                        {
+                            <option value="@project.ProjectId" selected>@project.ProjectName</option>
+                        }
+                        else
+                        {
+                            <option value="@project.ProjectId">@project.ProjectName</option>
+                        }
+                    }
+                </select>
+            </label>
+            <label>
+                <span>Employee</span>
+                <select name="WorkerId" class="form-select">
+                    <option value="">Not linked</option>
+                    @foreach (var worker in workers)
+                    {
+                        if (selectedWorkerId == worker.WorkerId)
+                        {
+                            <option value="@worker.WorkerId" selected>@worker.FullName</option>
+                        }
+                        else
+                        {
+                            <option value="@worker.WorkerId">@worker.FullName</option>
+                        }
+                    }
+                </select>
+            </label>
+            <label><span>Expiry Date</span><input type="date" name="ExpiryDate" class="form-input"></label>
+            <label><span>File</span><input type="file" name="file" class="form-input" required></label>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Upload to Qore</button>
+        <a href="@Url.Action("Index", "Document")" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

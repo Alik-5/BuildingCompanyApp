@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@(ViewData["Title"] ?? ViewBag.Title) - Qore</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/style.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/responsive.css")">
+</head>
+<body>
+    @{
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+        var role = Context.Session.GetString("Role") ?? string.Empty;
+        var username = Context.Session.GetString("Username") ?? "Qore User";
+        var canManage = role == "Admin" || role == "Manager";
+        var navItems = canManage
+            ? new[]
+            {
+                new { Controller = "Dashboard", Label = "Overview", Accent = "OV" },
+                new { Controller = "Project", Label = "Projects", Accent = "PR" },
+                new { Controller = "Worker", Label = "Team", Accent = "TM" },
+                new { Controller = "Material", Label = "Materials", Accent = "MT" },
+                new { Controller = "Finance", Label = "Finance", Accent = "FN" },
+                new { Controller = "Client", Label = "Clients", Accent = "CL" },
+                new { Controller = "Document", Label = "Documents", Accent = "DC" },
+                new { Controller = "Task", Label = "Tasks", Accent = "TS" }
+            }
+            : new[]
+            {
+                new { Controller = "Dashboard", Label = "My Space", Accent = "MS" },
+                new { Controller = "Project", Label = "My Projects", Accent = "PR" },
+                new { Controller = "Task", Label = "My Tasks", Accent = "TS" },
+                new { Controller = "Finance", Label = "My Salary", Accent = "SL" }
+            };
+    }
+
+    <div class="app-shell">
+        <div class="ambient ambient-one"></div>
+        <div class="ambient ambient-two"></div>
+        <div class="ambient ambient-three"></div>
+
+        <header class="topbar">
+            <div class="brand-lockup">
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                </button>
+                <a href="@Url.Action("Index", "Dashboard")" class="brand-mark">
+                    <span class="brand-badge">Q</span>
+                    <span>
+                        <strong>Qore</strong>
+                        <small>Construction command center</small>
+                    </span>
+                </a>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="user-pill">
+                    <strong>@username</strong>
+                    <span>@(canManage ? "Qore Management" : "Qore Employee")</span>
+                </div>
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span>Live operations</span>
+                </div>
+                @if (canManage)
+                {
+                    <a href="@Url.Action("Create", "Project")" class="btn btn-primary btn-compact">New Project</a>
+                }
+            </div>
+        </header>
+
+        <div class="shell-grid">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-panel">
+                    <p class="sidebar-kicker">Qore Modules</p>
+                    <nav class="sidebar-nav">
+                        <ul>
+                            @foreach (var item in navItems)
+                            {
+                                var isActive = string.Equals(controller, item.Controller, StringComparison.OrdinalIgnoreCase);
+                                <li>
+                                    <a href="@Url.Action("Index", item.Controller)" class="@(isActive ? "active" : string.Empty)">
+                                        <span class="nav-accent">@item.Accent</span>
+                                        <span>@item.Label</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+
+                    <div class="sidebar-cta">
+                        <p>@(canManage ? "Qore connects projects, employees, stock, finance, tasks and client history in one clear workflow." : "Your Qore workspace shows only your assigned tasks, projects and salary updates.")</p>
+                        @if (canManage)
+                        {
+                            <a href="@Url.Action("Upload", "Document")" class="btn btn-secondary btn-block">Attach Files</a>
+                        }
+                    </div>
+
+                    @if (role == "Admin")
+                    {
+                        <div class="sidebar-admin">
+                            <a href="@Url.Action("Dashboard", "Admin")" class="admin-panel-link">🛡️ Admin Panel</a>
+                        </div>
+                    }
+
+                    <a href="@Url.Action("Logout", "Auth")" class="logout-link">Logout</a>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="content-frame" data-reveal>
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <div>
+                <strong>Qore</strong>
+                <p>Built for construction teams that want speed, visibility and control.</p>
+            </div>
+            <p>&copy; 2026 Qore. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="@Url.Content("~/js/main.js")"></script>
+</body>
+</html>

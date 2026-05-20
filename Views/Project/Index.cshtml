@@ -1,0 +1,107 @@
+@model List<BuildingCompanyApp.Models.Project>
+@{
+    ViewData["Title"] = "Qore Projects";
+    Layout = "_Layout";
+    var canManage = ViewBag.CanManage is bool value && value;
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Project Management</p>
+        <h1>Projects in Qore are built around address, client, deadline, stage progression and attachments.</h1>
+        <p>Each card shows where construction stands right now and what supporting files are already attached.</p>
+    </div>
+    @if (canManage)
+    {
+        <a href="@Url.Action("Create", "Project")" class="btn btn-primary">Create Project</a>
+    }
+</section>
+
+<section class="card-grid two-up">
+    @if (Model != null && Model.Count > 0)
+    {
+        @foreach (var project in Model)
+        {
+            <article class="module-card project-showcase" data-reveal>
+                <div class="image-strip" style="background-image:url('@(project.ProjectImages.FirstOrDefault()?.ImageUrl ?? "https://picsum.photos/seed/qore-project/640/420")')">
+                    <span class="status-chip">@project.Status</span>
+                </div>
+
+                <div class="module-card-body">
+                    <div class="stack-title-row">
+                        <h2>@project.ProjectName</h2>
+                        <span class="priority-pill">@project.Priority</span>
+                    </div>
+                    <p class="muted">@project.Location</p>
+                    <p>@project.Description</p>
+
+                    <div class="project-meta-grid">
+                        <div>
+                            <span>Client</span>
+                            <strong>@project.ClientName</strong>
+                        </div>
+                        <div>
+                            <span>Deadline</span>
+                            <strong>@project.Deadline.ToString("MMM dd, yyyy")</strong>
+                        </div>
+                        @if (canManage)
+                        {
+                            <div>
+                                <span>Budget</span>
+                                <strong>@project.Budget.ToString("N0") AMD</strong>
+                            </div>
+                        }
+                        <div>
+                            <span>Attachments</span>
+                            <strong>@project.AttachmentCount files</strong>
+                        </div>
+                    </div>
+
+                    <div class="progress-inline">
+                        <div class="progress-label">
+                            <span>Current stage: @project.CurrentStage</span>
+                            <strong>@project.StageCompletionPercent%</strong>
+                        </div>
+                        <div class="progress-track">
+                            <span style="width:@project.StageCompletionPercent%"></span>
+                        </div>
+                    </div>
+
+                    <div class="stage-row">
+                        @foreach (var stage in project.Stages.OrderBy(stage => stage.DisplayOrder))
+                        {
+                            <span class="stage-pill @(stage.IsCompleted ? "done" : string.Empty)">@stage.StageName</span>
+                        }
+                    </div>
+
+                    <div class="team-badges">
+                        @foreach (var member in project.ProjectWorkers)
+                        {
+                            <span class="mini-badge">@member.Worker?.FullName</span>
+                        }
+                    </div>
+
+                    <div class="project-actions">
+                        <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-secondary">Details</a>
+                        @if (canManage)
+                        {
+                            <a href="@Url.Action("Edit", "Project", new { id = project.ProjectId })" class="btn btn-primary">Edit</a>
+                            <a href="@Url.Action("Upload", "Document", new { projectId = project.ProjectId })" class="btn btn-ghost">Attach Files</a>
+                            <form method="post" action="@Url.Action("Delete", "Project", new { id = project.ProjectId })">
+                                <button type="submit" class="btn btn-danger" onclick="return confirmDelete('Delete this project from Qore?')">Delete</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </article>
+        }
+    }
+    else
+    {
+        <div class="empty-state" data-reveal>
+            <h2>No projects yet</h2>
+            <p>Create the first Qore project and start tracking construction stages from foundation to finished.</p>
+            <a href="@Url.Action("Create", "Project")" class="btn btn-primary">Create Project</a>
+        </div>
+    }
+</section>

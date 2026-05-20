@@ -1,0 +1,283 @@
+@model BuildingCompanyApp.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Qore Overview";
+    Layout = "_Layout";
+}
+
+<section class="hero-panel" data-reveal>
+    <div>
+        <p class="eyebrow">Qore Operations Dashboard</p>
+        @if (Model.IsManagerView)
+        {
+            <h1>Track projects, crew, inventory, finance, documents and client follow-ups from one command center.</h1>
+            <p class="hero-copy">This dashboard turns the main construction requirements into a daily operating view for Qore leadership.</p>
+        }
+        else
+        {
+            <h1>Welcome to your Qore workspace, @Model.UserDisplayName.</h1>
+            <p class="hero-copy">Here you can quickly review your assigned projects, upcoming tasks and salary information without the management-only sections.</p>
+        }
+    </div>
+    <div class="hero-orbit">
+        <div class="hero-ring"></div>
+        <div class="hero-ring hero-ring-delay"></div>
+        <div class="hero-core">
+            <strong data-count="@(Model.IsManagerView ? Model.Profit : Model.PersonalSalary)">@(Model.IsManagerView ? Model.Profit.ToString("N0") : Model.PersonalSalary.ToString("N0"))</strong>
+            <span>@(Model.IsManagerView ? "monthly profit" : "monthly salary")</span>
+        </div>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card" data-reveal>
+        <p>Active Projects</p>
+        <strong data-count="@Model.ActiveProjects">@Model.ActiveProjects</strong>
+        <span>@Model.CompletedProjects completed / @Model.TotalProjects total</span>
+    </article>
+    <article class="insight-card warm" data-reveal>
+        <p>@(Model.IsManagerView ? "Monthly Income" : "My Salary")</p>
+        <strong data-count="@(Model.IsManagerView ? Model.MonthlyIncome : Model.PersonalSalary)">@(Model.IsManagerView ? Model.MonthlyIncome.ToString("N0") : Model.PersonalSalary.ToString("N0"))</strong>
+        <span>@(Model.IsManagerView ? "Client payments this month" : "Your current salary setup")</span>
+    </article>
+    <article class="insight-card danger" data-reveal>
+        <p>@(Model.IsManagerView ? "Monthly Expenses" : "Task Load")</p>
+        <strong data-count="@(Model.IsManagerView ? Model.MonthlyExpenses : Model.OpenTasks)">@(Model.IsManagerView ? Model.MonthlyExpenses.ToString("N0") : Model.OpenTasks.ToString())</strong>
+        <span>@(Model.IsManagerView ? "Payroll, stock and operational costs" : "Tasks still open for you")</span>
+    </article>
+    <article class="insight-card cool" data-reveal>
+        <p>@(Model.IsManagerView ? "Workers On Site" : "Attendance")</p>
+        <strong data-count="@Model.WorkersOnSite">@Model.WorkersOnSite</strong>
+        <span>@(Model.IsManagerView ? $"{Model.TotalWorkers} total employees" : "1 means you are marked active on site")</span>
+    </article>
+</section>
+
+<section class="dashboard-grid">
+    <article class="panel-card span-two" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Project Flow</p>
+                <h2>Highlighted sites</h2>
+            </div>
+            <a href="@Url.Action("Index", "Project")" class="text-link">See all projects</a>
+        </div>
+
+        <div class="stack-list">
+            @foreach (var project in Model.HighlightProjects)
+            {
+                var daysLeft = (project.Deadline - DateTime.Today).Days;
+                <div class="stack-item">
+                    <div>
+                        <div class="stack-title-row">
+                            <h3>@project.ProjectName</h3>
+                            <span class="status-chip">@project.Status</span>
+                        </div>
+                        <p>@project.Location</p>
+                    </div>
+
+                    <div class="progress-inline">
+                        <div class="progress-label">
+                            <span>@project.CurrentStage</span>
+                            <strong>@project.StageCompletionPercent%</strong>
+                        </div>
+                        <div class="progress-track">
+                            <span style="width:@project.StageCompletionPercent%"></span>
+                        </div>
+                    </div>
+
+                    <div class="meta-row">
+                        <span>Budget @project.Budget.ToString("N0") AMD</span>
+                        <span>@daysLeft days left</span>
+                        <span>@project.AttachmentCount attachments</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+
+    <article class="panel-card" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Urgency</p>
+                <h2>@(Model.IsManagerView ? "Critical signals" : "Your quick check")</h2>
+            </div>
+        </div>
+        <div class="alert-stack">
+            <div class="alert-tile">
+                <strong>@Model.OpenTasks</strong>
+                <span>open tasks</span>
+            </div>
+            <div class="alert-tile">
+                <strong>@(Model.IsManagerView ? Model.LowStockItems : Model.ActiveProjects)</strong>
+                <span>@(Model.IsManagerView ? "low stock items" : "active projects")</span>
+            </div>
+            <div class="alert-tile">
+                <strong>@(Model.IsManagerView ? Model.PendingInvoices : Model.CompletedProjects)</strong>
+                <span>@(Model.IsManagerView ? "pending invoices" : "completed projects")</span>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel-card" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Tasks</p>
+                <h2>Upcoming deadlines</h2>
+            </div>
+            <a href="@Url.Action("Index", "Task")" class="text-link">Task board</a>
+        </div>
+        <div class="stack-list compact">
+            @foreach (var task in Model.UpcomingTasks)
+            {
+                <div class="stack-item compact">
+                    <div>
+                        <h3>@task.Title</h3>
+                        <p>@task.ProjectName</p>
+                    </div>
+                    <div class="task-meta">
+                        <span>@task.AssignedTo</span>
+                        <strong>@task.DueDate.ToString("MMM dd")</strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+
+    @if (Model.IsManagerView)
+    {
+        <article class="panel-card" data-reveal>
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Materials</p>
+                    <h2>Critical stock</h2>
+                </div>
+                <a href="@Url.Action("Index", "Material")" class="text-link">Inventory</a>
+            </div>
+            <div class="stack-list compact">
+                @foreach (var item in Model.CriticalMaterials)
+                {
+                    <div class="stack-item compact">
+                        <div>
+                            <h3>@item.Name</h3>
+                            <p>@item.SupplierName</p>
+                        </div>
+                        <div class="task-meta">
+                            <span>@item.QuantityInStock @item.Unit</span>
+                            <strong>Min @item.ReorderLevel</strong>
+                        </div>
+                    </div>
+                }
+            </div>
+        </article>
+    }
+    else
+    {
+        <article class="panel-card" data-reveal>
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Salary</p>
+                    <h2>Your compensation</h2>
+                </div>
+                <a href="@Url.Action("Index", "Finance")" class="text-link">Open salary view</a>
+            </div>
+            <div class="finance-band">
+                <div class="finance-kpi">
+                    <span>Monthly Salary</span>
+                    <strong>@Model.PersonalSalary.ToString("N0") AMD</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Assigned Projects</span>
+                    <strong>@Model.TotalProjects</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Open Tasks</span>
+                    <strong>@Model.OpenTasks</strong>
+                </div>
+            </div>
+        </article>
+    }
+
+    <article class="panel-card @(Model.IsManagerView ? "span-two" : string.Empty)" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">@((Model.IsManagerView ? "Finance" : "Salary History"))</p>
+                <h2>@(Model.IsManagerView ? "Cash movement" : "Recent payroll records")</h2>
+            </div>
+            <a href="@Url.Action("Index", "Finance")" class="text-link">Finance center</a>
+        </div>
+        <div class="finance-band">
+            @if (Model.IsManagerView)
+            {
+                <div class="finance-kpi">
+                    <span>Total Budget</span>
+                    <strong>@Model.TotalBudget.ToString("N0") AMD</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Income</span>
+                    <strong>@Model.MonthlyIncome.ToString("N0") AMD</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Expense</span>
+                    <strong>@Model.MonthlyExpenses.ToString("N0") AMD</strong>
+                </div>
+            }
+            else
+            {
+                <div class="finance-kpi">
+                    <span>Salary</span>
+                    <strong>@Model.PersonalSalary.ToString("N0") AMD</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Open Tasks</span>
+                    <strong>@Model.OpenTasks</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Completed Projects</span>
+                    <strong>@Model.CompletedProjects</strong>
+                </div>
+            }
+        </div>
+        <div class="mini-table">
+            @foreach (var tx in Model.RecentTransactions)
+            {
+                <div class="mini-row">
+                    <div>
+                        <strong>@tx.Category</strong>
+                        <p>@tx.ProjectName</p>
+                    </div>
+                    <div class="mini-row-right">
+                        <span class="pill @(tx.EntryType == "Income" ? "pill-positive" : "pill-negative")">@tx.EntryType</span>
+                        <strong>@tx.Amount.ToString("N0") AMD</strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+
+    @if (Model.IsManagerView)
+    {
+        <article class="panel-card" data-reveal>
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">CRM</p>
+                    <h2>Client reminders</h2>
+                </div>
+                <a href="@Url.Action("Index", "Client")" class="text-link">CRM</a>
+            </div>
+            <div class="stack-list compact">
+                @foreach (var client in Model.ClientReminders)
+                {
+                    <div class="stack-item compact">
+                        <div>
+                            <h3>@client.Name</h3>
+                            <p>@client.CompanyName</p>
+                        </div>
+                        <div class="task-meta">
+                            <span>@client.ContractStatus</span>
+                            <strong>@client.ReminderDate.ToString("MMM dd")</strong>
+                        </div>
+                    </div>
+                }
+            </div>
+        </article>
+    }
+</section>

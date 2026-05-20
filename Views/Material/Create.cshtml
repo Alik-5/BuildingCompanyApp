@@ -1,0 +1,30 @@
+@model BuildingCompanyApp.Models.MaterialItem
+@{
+    ViewData["Title"] = "Add Material";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">New Material</p>
+        <h1>Add stock items into the Qore warehouse register.</h1>
+    </div>
+</section>
+
+<form method="post" action="@Url.Action("Create", "Material")" class="form-shell" data-reveal>
+    <div class="form-section">
+        <div class="form-grid">
+            <label><span>Name</span><input type="text" name="Name" class="form-input" required></label>
+            <label><span>Unit</span><input type="text" name="Unit" class="form-input" placeholder="bags, tons, sqm" required></label>
+            <label><span>Quantity In Stock</span><input type="number" name="QuantityInStock" class="form-input" step="0.01" required></label>
+            <label><span>Unit Price</span><input type="number" name="UnitPrice" class="form-input" step="0.01" required></label>
+            <label><span>Reorder Level</span><input type="number" name="ReorderLevel" class="form-input" step="0.01" required></label>
+            <label><span>Supplier</span><input type="text" name="SupplierName" class="form-input"></label>
+            <label><span>Storage Location</span><input type="text" name="StorageLocation" class="form-input"></label>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add Material</button>
+        <a href="@Url.Action("Index", "Material")" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

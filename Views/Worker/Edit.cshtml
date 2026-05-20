@@ -1,0 +1,64 @@
+@model BuildingCompanyApp.Models.WorkerUpsertViewModel
+@{
+    ViewData["Title"] = "Edit Employee";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Update Employee</p>
+        <h1>Keep attendance, role, salary, work-hours and Qore access details current.</h1>
+    </div>
+</section>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-error" data-reveal>@ViewBag.Error</div>
+}
+
+<form method="post" action="@Url.Action("Edit", "Worker", new { id = Model.WorkerId })" class="form-shell" data-reveal>
+    <input type="hidden" name="WorkerId" value="@Model.WorkerId">
+    <div class="form-section">
+        <div class="form-grid">
+            <label><span>Full Name</span><input type="text" name="FullName" class="form-input" value="@Model.FullName" required></label>
+            <label><span>Role</span><input type="text" name="Role" class="form-input" value="@Model.Role"></label>
+            <label><span>Position</span><input type="text" name="Position" class="form-input" value="@Model.Position" required></label>
+            <label><span>Specialization</span><input type="text" name="Specialization" class="form-input" value="@Model.Specialization"></label>
+            <label><span>Salary</span><input type="number" name="Salary" class="form-input" step="0.01" value="@Model.Salary"></label>
+            <label><span>Attendance</span><input type="text" name="AttendanceStatus" class="form-input" value="@Model.AttendanceStatus"></label>
+            <label><span>Work Hours</span><input type="number" name="WorkHours" class="form-input" step="0.5" value="@Model.WorkHours"></label>
+            <label><span>Hire Date</span><input type="date" name="HireDate" class="form-input" value="@Model.HireDate.ToString("yyyy-MM-dd")"></label>
+            <label><span>Phone</span><input type="tel" name="Phone" class="form-input" value="@Model.Phone"></label>
+            <label><span>Address</span><input type="text" name="Address" class="form-input" value="@Model.Address"></label>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2>Qore Access</h2>
+        <div class="form-grid">
+            <label><span>Username</span><input type="text" name="Username" class="form-input" value="@Model.Username"></label>
+            <label><span>Email</span><input type="email" name="Email" class="form-input" value="@Model.Email"></label>
+            <label><span>New Password</span><input type="text" name="Password" class="form-input" placeholder="Leave blank to keep current password"></label>
+            <label><span>System Access</span>
+                <select name="AccessRole" class="form-select">
+                    @foreach (var role in new[] { "Employee", "Manager" })
+                    {
+                        if (role == Model.AccessRole)
+                        {
+                            <option value="@role" selected>@role</option>
+                        }
+                        else
+                        {
+                            <option value="@role">@role</option>
+                        }
+                    }
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="@Url.Action("Details", "Worker", new { id = Model.WorkerId })" class="btn btn-secondary">Back</a>
+    </div>
+</form>

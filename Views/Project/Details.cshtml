@@ -1,0 +1,114 @@
+@model BuildingCompanyApp.Models.Project
+@{
+    ViewData["Title"] = "Project Details";
+    Layout = "_Layout";
+    var canManage = ViewBag.CanManage is bool value && value;
+}
+
+<section class="detail-hero" data-reveal>
+    <div>
+        <p class="eyebrow">Project Detail</p>
+        <h1>@Model.ProjectName</h1>
+        <p>@Model.Description</p>
+    </div>
+    <div class="detail-actions">
+        @if (canManage)
+        {
+            <a href="@Url.Action("Edit", "Project", new { id = Model.ProjectId })" class="btn btn-primary">Edit</a>
+            <a href="@Url.Action("Upload", "Document", new { projectId = Model.ProjectId })" class="btn btn-secondary">Attach File</a>
+        }
+    </div>
+</section>
+
+<section class="detail-grid">
+    <article class="panel-card span-two" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Stage Timeline</p>
+                <h2>@Model.CurrentStage</h2>
+            </div>
+            <span class="status-chip">@Model.Status</span>
+        </div>
+        <div class="progress-inline">
+            <div class="progress-label">
+                <span>Overall stage completion</span>
+                <strong>@Model.StageCompletionPercent%</strong>
+            </div>
+            <div class="progress-track">
+                <span style="width:@Model.StageCompletionPercent%"></span>
+            </div>
+        </div>
+        <div class="stage-row">
+            @foreach (var stage in Model.Stages.OrderBy(stage => stage.DisplayOrder))
+            {
+                <span class="stage-pill @(stage.IsCompleted ? "done" : string.Empty)">@stage.StageName</span>
+            }
+        </div>
+    </article>
+
+    <article class="panel-card" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Snapshot</p>
+                <h2>Key facts</h2>
+            </div>
+        </div>
+        <div class="fact-list">
+            <div><span>Address</span><strong>@Model.Location</strong></div>
+            <div><span>Client</span><strong>@Model.ClientName</strong></div>
+            <div><span>Deadline</span><strong>@Model.Deadline.ToString("MMM dd, yyyy")</strong></div>
+            @if (canManage)
+            {
+                <div><span>Budget</span><strong>@Model.Budget.ToString("N0") AMD</strong></div>
+            }
+            <div><span>Site Manager</span><strong>@Model.SiteManager</strong></div>
+            <div><span>Files</span><strong>@Model.AttachmentCount attached</strong></div>
+        </div>
+    </article>
+
+    <article class="panel-card" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Assigned Team</p>
+                <h2>People on this project</h2>
+            </div>
+        </div>
+        <div class="team-badges">
+            @foreach (var member in Model.ProjectWorkers)
+            {
+                <span class="mini-badge">@member.Worker?.FullName</span>
+            }
+        </div>
+    </article>
+
+    <article class="panel-card span-three" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Documents</p>
+                <h2>Attached files</h2>
+            </div>
+        </div>
+        @if (Model.Documents.Any())
+        {
+            <div class="mini-table">
+                @foreach (var document in Model.Documents)
+                {
+                    <div class="mini-row">
+                        <div>
+                            <strong>@document.DocumentName</strong>
+                            <p>@document.Category</p>
+                        </div>
+                        <div class="mini-row-right">
+                            <span class="pill">@document.DocumentType</span>
+                            <strong>@document.UploadedDate.ToString("MMM dd")</strong>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="muted">No files attached yet.</p>
+        }
+    </article>
+</section>

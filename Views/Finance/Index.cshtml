@@ -1,0 +1,82 @@
+@model BuildingCompanyApp.Models.FinancePageViewModel
+@{
+    ViewData["Title"] = "Qore Finance";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Finance System</p>
+        <h1>@(Model.CanManage ? "Income, expenses, salaries, budgets, invoices and payment history in one Qore view." : $"Salary and payroll records for {Model.EmployeeName}.")</h1>
+    </div>
+    @if (Model.CanManage)
+    {
+        <a href="@Url.Action("Create", "Finance")" class="btn btn-primary">Add Entry</a>
+    }
+</section>
+
+<section class="dashboard-grid">
+    <article class="panel-card @(Model.CanManage ? "span-two" : "span-three")" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">@(Model.CanManage ? "Ledger" : "Payroll")</p>
+                <h2>@(Model.CanManage ? "Latest transactions" : "Your salary records")</h2>
+            </div>
+        </div>
+        @if (!Model.CanManage)
+        {
+            <div class="finance-band">
+                <div class="finance-kpi">
+                    <span>Current Salary</span>
+                    <strong>@Model.Salary.ToString("N0") AMD</strong>
+                </div>
+                <div class="finance-kpi">
+                    <span>Paid This Year</span>
+                    <strong>@Model.SalaryPaidThisYear.ToString("N0") AMD</strong>
+                </div>
+            </div>
+        }
+        <div class="mini-table">
+            @foreach (var entry in Model.Entries)
+            {
+                <div class="mini-row">
+                    <div>
+                        <strong>@entry.Category</strong>
+                        <p>@entry.ProjectName / @entry.PaymentMethod</p>
+                    </div>
+                    <div class="mini-row-right">
+                        <span class="pill @(entry.EntryType == "Income" ? "pill-positive" : "pill-negative")">@entry.EntryType</span>
+                        <strong>@entry.Amount.ToString("N0") AMD</strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+
+    @if (Model.CanManage)
+    {
+        <article class="panel-card" data-reveal>
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Invoices</p>
+                    <h2>Payment queue</h2>
+                </div>
+            </div>
+            <div class="stack-list compact">
+                @foreach (var invoice in Model.Invoices)
+                {
+                    <div class="stack-item compact">
+                        <div>
+                            <h3>@invoice.InvoiceNumber</h3>
+                            <p>@invoice.ClientName</p>
+                        </div>
+                        <div class="task-meta">
+                            <span>@invoice.Status</span>
+                            <strong>@invoice.Amount.ToString("N0") AMD</strong>
+                        </div>
+                    </div>
+                }
+            </div>
+        </article>
+    }
+</section>

@@ -1,0 +1,108 @@
+@model BuildingCompanyApp.Models.TaskUpsertViewModel
+@{
+    ViewData["Title"] = "Edit Task";
+    Layout = "_Layout";
+    var canManage = (Context.Session.GetString("Role") ?? string.Empty) is "Admin" or "Manager";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Task Update</p>
+        <h1>@(canManage ? "Adjust assignment, scope, deadlines and delivery state in Qore." : "Update your own task progress and leave the latest work note.")</h1>
+    </div>
+</section>
+
+<form method="post" action="@Url.Action("Edit", "Task", new { id = Model.WorkTaskId })" class="form-shell" data-reveal>
+    <div class="form-section">
+        <div class="form-grid">
+            @if (canManage)
+            {
+                <label><span>Title</span><input type="text" name="Title" class="form-input" value="@Model.Title" required></label>
+                <label><span>Project</span>
+                    <select name="ProjectId" class="form-select" required>
+                        @foreach (var project in Model.AvailableProjects)
+                        {
+                            if (project.ProjectId == Model.ProjectId)
+                            {
+                                <option value="@project.ProjectId" selected>@project.ProjectName</option>
+                            }
+                            else
+                            {
+                                <option value="@project.ProjectId">@project.ProjectName</option>
+                            }
+                        }
+                    </select>
+                </label>
+                <label><span>Assign To</span>
+                    <select name="AssignedWorkerId" class="form-select" required>
+                        @foreach (var worker in Model.AvailableWorkers)
+                        {
+                            if (worker.WorkerId == Model.AssignedWorkerId)
+                            {
+                                <option value="@worker.WorkerId" selected>@worker.FullName</option>
+                            }
+                            else
+                            {
+                                <option value="@worker.WorkerId">@worker.FullName</option>
+                            }
+                        }
+                    </select>
+                </label>
+                <label><span>Priority</span>
+                    <select name="Priority" class="form-select">
+                        @foreach (var priority in new[] { "Low", "Medium", "High" })
+                        {
+                            if (priority == Model.Priority)
+                            {
+                                <option value="@priority" selected>@priority</option>
+                            }
+                            else
+                            {
+                                <option value="@priority">@priority</option>
+                            }
+                        }
+                    </select>
+                </label>
+                <label><span>Due Date</span><input type="date" name="DueDate" class="form-input" value="@Model.DueDate.ToString("yyyy-MM-dd")"></label>
+                <label class="checkbox-line inline-check">
+                    @if (Model.NotificationsEnabled)
+                    {
+                        <input type="checkbox" name="NotificationsEnabled" value="true" checked>
+                    }
+                    else
+                    {
+                        <input type="checkbox" name="NotificationsEnabled" value="true">
+                    }
+                    <span>Enable notifications</span>
+                </label>
+            }
+            else
+            {
+                <input type="hidden" name="Title" value="@Model.Title">
+                <input type="hidden" name="ProjectId" value="@Model.ProjectId">
+                <input type="hidden" name="AssignedWorkerId" value="@Model.AssignedWorkerId">
+                <input type="hidden" name="Priority" value="@Model.Priority">
+                <input type="hidden" name="NotificationsEnabled" value="@Model.NotificationsEnabled">
+                <input type="hidden" name="DueDate" value="@Model.DueDate.ToString("yyyy-MM-dd")">
+                <input type="hidden" name="Description" value="@Model.Description">
+            }
+
+            <label><span>Status</span><input type="text" name="Status" class="form-input" value="@Model.Status"></label>
+            <label><span>Progress %</span><input type="number" name="ProgressPercent" min="0" max="100" class="form-input" value="@Model.ProgressPercent"></label>
+            <label><span>Comments</span><input type="number" name="CommentCount" class="form-input" value="@Model.CommentCount"></label>
+            <label><span>Latest Comment</span><input type="text" name="LatestComment" class="form-input" value="@Model.LatestComment"></label>
+        </div>
+        @if (canManage)
+        {
+            <label><span>Description</span><textarea name="Description" class="form-textarea">@Model.Description</textarea></label>
+        }
+        else
+        {
+            <div class="comment-note strong">@Model.Description</div>
+        }
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Task</button>
+        <a href="@Url.Action("Index", "Task")" class="btn btn-secondary">Back</a>
+    </div>
+</form>

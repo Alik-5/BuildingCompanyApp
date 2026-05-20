@@ -1,0 +1,352 @@
+@using BuildingCompanyApp.Controllers
+
+@{
+    ViewBag.Title = "Create New User";
+}
+
+<div class="create-user-container">
+    <div class="form-card">
+        <h1>➕ Create New User Account</h1>
+        <p class="form-subtitle">Add a new manager, admin, or employee account to Qore</p>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Success))
+        {
+            <div class="alert alert-success">
+                ✓ @ViewBag.Success
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(ViewBag.Error))
+        {
+            <div class="alert alert-danger">
+                ✗ @ViewBag.Error
+            </div>
+        }
+
+        <form method="post" class="user-form">
+            <div class="form-section">
+                <h3>👤 Personal Information</h3>
+                
+                <div class="form-group">
+                    <label for="FirstName">First Name *</label>
+                    <input type="text" id="FirstName" name="FirstName" required value="@Model?.FirstName"
+                           placeholder="e.g., David" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="LastName">Last Name *</label>
+                    <input type="text" id="LastName" name="LastName" required value="@Model?.LastName"
+                           placeholder="e.g., Hakobyan" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">Email Address *</label>
+                    <input type="email" id="Email" name="Email" required value="@Model?.Email"
+                           placeholder="e.g., david@qore.am" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🔐 Login Credentials</h3>
+                
+                <div class="form-group">
+                    <label for="Username">Username *</label>
+                    <input type="text" id="Username" name="Username" required value="@Model?.Username"
+                           placeholder="e.g., david.manager" class="form-control">
+                    <small class="hint">This is what the user will use to log in. Use lowercase, no spaces.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password *</label>
+                    <input type="password" id="Password" name="Password" required placeholder="At least 8 characters"
+                           class="form-control" minlength="8">
+                    <small class="hint">Strong passwords recommended. User will receive this during onboarding.</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>👨‍💼 Role & Permissions</h3>
+                
+                <div class="form-group">
+                    <label for="Role">User Role *</label>
+                    <select id="Role" name="Role" class="form-control" onchange="updateRoleDescription()">
+                        <option value="Employee">Employee</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="role-description">
+                    <div id="role-employee" class="role-info active">
+                        <strong>Employee</strong>
+                        <p>✓ View own assigned projects and tasks<br/>
+                           ✓ Update task progress and status<br/>
+                           ✓ View own salary/payroll<br/>
+                           ✓ Limited read-only access</p>
+                    </div>
+                    <div id="role-manager" class="role-info">
+                        <strong>Manager</strong>
+                        <p>✓ View all projects, employees, materials<br/>
+                           ✓ Create and assign tasks<br/>
+                           ✓ Manage materials and finance<br/>
+                           ✓ View CRM and client data</p>
+                    </div>
+                    <div id="role-admin" class="role-info">
+                        <strong>Admin</strong>
+                        <p>✓ Full system access<br/>
+                           ✓ Create/edit/delete users<br/>
+                           ✓ Manage all business data<br/>
+                           ✓ System configuration</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    ✓ Create User Account
+                </button>
+                <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+        <div class="quick-tips">
+            <h4>💡 Quick Tips</h4>
+            <ul>
+                <li><strong>Manager Accounts:</strong> Use these for team leads. They can create and manage projects.</li>
+                <li><strong>Admin Accounts:</strong> Use sparingly. Only for system administrators.</li>
+                <li><strong>Employee Accounts:</strong> Default role. Limited access, view own tasks only.</li>
+                <li><strong>Passwords:</strong> Share securely. User can change password after first login.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+.create-user-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.form-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.form-card h1 {
+    font-size: 2rem;
+    color: #1a2847;
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    animation: slideInDown 0.4s ease-out;
+}
+
+.alert-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    border: 1px solid #f1b0b7;
+    color: #721c24;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h3 {
+    font-size: 1.2rem;
+    color: #1a2847;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.hint {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.role-description {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    border-left: 4px solid #4f46e5;
+}
+
+.role-info {
+    display: none;
+}
+
+.role-info.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.role-info strong {
+    color: #4f46e5;
+    font-size: 1.1rem;
+}
+
+.role-info p {
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+}
+
+.btn-secondary {
+    background: #e9ecef;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #dee2e6;
+}
+
+.quick-tips {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f0f7ff;
+    border-radius: 0.5rem;
+    border-left: 4px solid #4f46e5;
+}
+
+.quick-tips h4 {
+    color: #4f46e5;
+    margin-bottom: 1rem;
+}
+
+.quick-tips ul {
+    list-style: none;
+    padding: 0;
+}
+
+.quick-tips li {
+    padding: 0.5rem 0;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+</style>
+
+<script>
+function updateRoleDescription() {
+    const role = document.getElementById('Role').value;
+    
+    document.querySelectorAll('.role-info').forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    document.getElementById('role-' + role.toLowerCase()).classList.add('active');
+}
+</script>

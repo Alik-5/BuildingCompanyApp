@@ -1,0 +1,55 @@
+@model BuildingCompanyApp.Models.TaskBoardViewModel
+@{
+    ViewData["Title"] = "Qore Tasks";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Task System</p>
+        <h1>@(Model.CanManage ? "Create tasks, route work to employees and keep every deadline visible." : $"These are the tasks assigned to {Model.CurrentEmployeeName} in Qore.")</h1>
+    </div>
+    @if (Model.CanManage)
+    {
+        <a href="@Url.Action("Create", "Task")" class="btn btn-primary">Create Task</a>
+    }
+</section>
+
+<section class="card-grid two-up">
+    @foreach (var task in Model.Tasks)
+    {
+        <article class="module-card" data-reveal>
+            <div class="module-card-body">
+                <div class="stack-title-row">
+                    <h2>@task.Title</h2>
+                    <span class="status-chip">@task.Status</span>
+                </div>
+                <p>@task.Description</p>
+                <div class="fact-list tight">
+                    <div><span>Project</span><strong>@task.ProjectName</strong></div>
+                    <div><span>Assigned To</span><strong>@task.AssignedTo</strong></div>
+                    <div><span>Priority</span><strong>@task.Priority</strong></div>
+                    <div><span>Due Date</span><strong>@task.DueDate.ToString("MMM dd, yyyy")</strong></div>
+                    <div><span>Comments</span><strong>@task.CommentCount</strong></div>
+                    <div><span>Notifications</span><strong>@(task.NotificationsEnabled ? "On" : "Off")</strong></div>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(task.LatestComment))
+                {
+                    <div class="comment-note">@task.LatestComment</div>
+                }
+                <div class="progress-inline">
+                    <div class="progress-label">
+                        <span>Progress</span>
+                        <strong>@task.ProgressPercent%</strong>
+                    </div>
+                    <div class="progress-track">
+                        <span style="width:@task.ProgressPercent%"></span>
+                    </div>
+                </div>
+                <div class="project-actions">
+                    <a href="@Url.Action("Edit", "Task", new { id = task.WorkTaskId })" class="btn btn-primary">@(Model.CanManage ? "Manage Task" : "Update Progress")</a>
+                </div>
+            </div>
+        </article>
+    }
+</section>

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: qore
+    runtime: dotnet
+    plan: free
+    region: us-east
+
+    buildCommand: dotnet build
+    startCommand: dotnet run --urls "http://0.0.0.0:$PORT"
+
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: DOTNET_TieredCompilation
+        value: "false"
+
+    autoDeploy: true

@@ -1,0 +1,64 @@
+@model List<BuildingCompanyApp.Models.MaterialItem>
+@{
+    ViewData["Title"] = "Qore Materials";
+    Layout = "_Layout";
+    var transactions = ViewBag.Transactions as List<BuildingCompanyApp.Models.MaterialTransaction> ?? new();
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Material Management</p>
+        <h1>Monitor warehouse stock, in and out movement, suppliers and automatic remaining balance.</h1>
+    </div>
+    <a href="@Url.Action("Create", "Material")" class="btn btn-primary">Add Material</a>
+</section>
+
+<section class="dashboard-grid">
+    <article class="panel-card span-two" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Inventory</p>
+                <h2>Current stock</h2>
+            </div>
+        </div>
+        <div class="mini-table">
+            @foreach (var item in Model)
+            {
+                <div class="mini-row">
+                    <div>
+                        <strong>@item.Name</strong>
+                        <p>@item.SupplierName / @item.StorageLocation</p>
+                    </div>
+                    <div class="mini-row-right">
+                        <span class="pill @(item.QuantityInStock <= item.ReorderLevel ? "pill-negative" : "pill-positive")">@item.QuantityInStock @item.Unit</span>
+                        <strong>@item.UnitPrice.ToString("N0") AMD</strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+
+    <article class="panel-card" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Movement</p>
+                <h2>Recent entries</h2>
+            </div>
+        </div>
+        <div class="stack-list compact">
+            @foreach (var tx in transactions.Take(6))
+            {
+                <div class="stack-item compact">
+                    <div>
+                        <h3>@tx.ReferenceProject</h3>
+                        <p>@tx.SupplierName</p>
+                    </div>
+                    <div class="task-meta">
+                        <span>@tx.TransactionType</span>
+                        <strong>@tx.Quantity</strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+</section>

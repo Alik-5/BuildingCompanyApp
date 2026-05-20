@@ -1,0 +1,32 @@
+@model BuildingCompanyApp.Models.Client
+@{
+    ViewData["Title"] = "Add Client";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">CRM Entry</p>
+        <h1>Create a client profile with notes, contract state and reminder date.</h1>
+    </div>
+</section>
+
+<form method="post" action="@Url.Action("Create", "Client")" class="form-shell" data-reveal>
+    <div class="form-section">
+        <div class="form-grid">
+            <label><span>Name</span><input type="text" name="Name" class="form-input" required></label>
+            <label><span>Company</span><input type="text" name="CompanyName" class="form-input"></label>
+            <label><span>Email</span><input type="email" name="Email" class="form-input"></label>
+            <label><span>Phone</span><input type="tel" name="Phone" class="form-input"></label>
+            <label><span>Contract Status</span><input type="text" name="ContractStatus" class="form-input" placeholder="Signed, Negotiation, Closed"></label>
+            <label><span>Reminder Date</span><input type="date" name="ReminderDate" class="form-input"></label>
+            <label><span>Last Contact Date</span><input type="date" name="LastContactDate" class="form-input"></label>
+            <label><span>Project History</span><input type="text" name="ProjectHistory" class="form-input"></label>
+        </div>
+        <label><span>Notes</span><textarea name="Notes" class="form-textarea"></textarea></label>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Client</button>
+        <a href="@Url.Action("Index", "Client")" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

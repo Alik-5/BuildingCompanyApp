@@ -1,0 +1,35 @@
+@model BuildingCompanyApp.Models.FinanceEntry
+@{
+    ViewData["Title"] = "Add Finance Entry";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Finance Entry</p>
+        <h1>Record income or expense in Qore.</h1>
+    </div>
+</section>
+
+<form method="post" action="@Url.Action("Create", "Finance")" class="form-shell" data-reveal>
+    <div class="form-section">
+        <div class="form-grid">
+            <label><span>Entry Type</span>
+                <select name="EntryType" class="form-select">
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
+            </label>
+            <label><span>Category</span><input type="text" name="Category" class="form-input" required></label>
+            <label><span>Project Name</span><input type="text" name="ProjectName" class="form-input"></label>
+            <label><span>Amount</span><input type="number" name="Amount" class="form-input" step="0.01" required></label>
+            <label><span>Payment Method</span><input type="text" name="PaymentMethod" class="form-input"></label>
+            <label><span>Date</span><input type="date" name="EntryDate" class="form-input"></label>
+        </div>
+        <label><span>Notes</span><textarea name="Notes" class="form-textarea"></textarea></label>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Entry</button>
+        <a href="@Url.Action("Index", "Finance")" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

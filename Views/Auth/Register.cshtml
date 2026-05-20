@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_AuthLayout";
+}
+
+<div class="auth-screen">
+    <div class="auth-backdrop auth-backdrop-one"></div>
+    <div class="auth-backdrop auth-backdrop-two"></div>
+
+    <div class="auth-panel" data-reveal>
+        <div class="auth-brand">
+            <span class="brand-badge">Q</span>
+            <div>
+                <h1>Qore</h1>
+                <p>Create your workspace access</p>
+            </div>
+        </div>
+
+        <form method="post" action="@Url.Action("Register", "Auth")" class="auth-form">
+            <label><span>Username</span><input type="text" name="Username" class="form-input" required></label>
+            <label><span>Email</span><input type="email" name="Email" class="form-input" required></label>
+            <label><span>First Name</span><input type="text" name="FirstName" class="form-input" required></label>
+            <label><span>Last Name</span><input type="text" name="LastName" class="form-input" required></label>
+            <label><span>Password</span><input type="password" name="Password" class="form-input" required></label>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-error">@ViewBag.Error</div>
+            }
+
+            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            <p class="auth-footer">Already registered? <a href="@Url.Action("Login", "Auth")">Sign in</a></p>
+        </form>
+    </div>
+</div>

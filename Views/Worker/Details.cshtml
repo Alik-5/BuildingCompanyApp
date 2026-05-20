@@ -1,0 +1,45 @@
+@model BuildingCompanyApp.Models.Worker
+@{
+    ViewData["Title"] = "Employee Details";
+    Layout = "_Layout";
+}
+
+<section class="detail-hero" data-reveal>
+    <div>
+        <p class="eyebrow">Employee Detail</p>
+        <h1>@Model.FullName</h1>
+        <p>@Model.Role / @Model.Position</p>
+    </div>
+    <div class="detail-actions">
+        <a href="@Url.Action("Edit", "Worker", new { id = Model.WorkerId })" class="btn btn-primary">Edit</a>
+        <a href="@Url.Action("Index", "Worker")" class="btn btn-secondary">Back</a>
+    </div>
+</section>
+
+<section class="detail-grid">
+    <article class="panel-card" data-reveal>
+        <div class="avatar-badge large">@Model.FullName.Substring(0, 1)</div>
+        <div class="fact-list">
+            <div><span>Attendance</span><strong>@Model.AttendanceStatus</strong></div>
+            <div><span>Work Hours</span><strong>@Model.WorkHours.ToString("0.#") hrs</strong></div>
+            <div><span>Salary</span><strong>@Model.Salary.ToString("N0") AMD</strong></div>
+            <div><span>Hire Date</span><strong>@Model.HireDate.ToString("MMM dd, yyyy")</strong></div>
+        </div>
+    </article>
+
+    <article class="panel-card span-two" data-reveal>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Contact</p>
+                <h2>Worker profile</h2>
+            </div>
+        </div>
+        <div class="fact-list">
+            <div><span>Phone</span><strong>@Model.Phone</strong></div>
+            <div><span>Address</span><strong>@Model.Address</strong></div>
+            <div><span>Specialization</span><strong>@Model.Specialization</strong></div>
+            <div><span>Role</span><strong>@Model.Role</strong></div>
+            <div><span>Qore Login</span><strong>@(Model.User?.Username ?? "Not linked")</strong></div>
+        </div>
+    </article>
+</section>

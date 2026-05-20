@@ -1,0 +1,52 @@
+@model List<BuildingCompanyApp.Models.Worker>
+@{
+    ViewData["Title"] = "Qore Team";
+    Layout = "_Layout";
+}
+
+<section class="page-intro" data-reveal>
+    <div>
+        <p class="eyebrow">Employee Management</p>
+        <h1>See roles, salary, attendance, work hours and who is carrying delivery on site.</h1>
+    </div>
+    <a href="@Url.Action("Create", "Worker")" class="btn btn-primary">Add Employee</a>
+</section>
+
+<section class="card-grid three-up">
+    @if (Model != null && Model.Count > 0)
+    {
+        @foreach (var worker in Model)
+        {
+            <article class="module-card team-card" data-reveal>
+                <div class="avatar-badge">@worker.FullName.Substring(0, 1)</div>
+                <div class="module-card-body">
+                    <div class="stack-title-row">
+                        <h2>@worker.FullName</h2>
+                        <span class="status-chip">@worker.AttendanceStatus</span>
+                    </div>
+                    <p class="muted">@worker.Role / @worker.Position</p>
+                    <div class="fact-list tight">
+                        <div><span>Specialization</span><strong>@worker.Specialization</strong></div>
+                        <div><span>Salary</span><strong>@worker.Salary.ToString("N0") AMD</strong></div>
+                        <div><span>Work Hours</span><strong>@worker.WorkHours.ToString("0.#") hrs</strong></div>
+                        <div><span>Phone</span><strong>@worker.Phone</strong></div>
+                    </div>
+                    <div class="project-actions">
+                        <a href="@Url.Action("Details", "Worker", new { id = worker.WorkerId })" class="btn btn-secondary">View</a>
+                        <a href="@Url.Action("Edit", "Worker", new { id = worker.WorkerId })" class="btn btn-primary">Edit</a>
+                        <form method="post" action="@Url.Action("Delete", "Worker", new { id = worker.WorkerId })">
+                            <button type="submit" class="btn btn-danger" onclick="return confirmDelete('Remove this employee from Qore?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        }
+    }
+    else
+    {
+        <div class="empty-state" data-reveal>
+            <h2>No employees yet</h2>
+            <p>Add engineers, architects, workers, managers and accountants to start team tracking.</p>
+        </div>
+    }
+</section>
