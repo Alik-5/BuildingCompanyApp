@@ -1,0 +1,22 @@
+{
+  "name": "BuildingCompanyApp",
+  "version": "1.0.0",
+  "description": "Building Company Management System - Web Application",
+  "main": "Program.cs",
+  "scripts": {
+    "start": "dotnet run",
+    "build": "dotnet build",
+    "test": "dotnet test",
+    "publish": "dotnet publish -c Release"
+  },
+  "keywords": [
+    "building",
+    "company",
+    "management",
+    "workers",
+    "projects",
+    "asp.net core"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
